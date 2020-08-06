@@ -101,6 +101,7 @@ const handleGame = (data) => {
     view_SetGameDrawing(myKeyword);
   } else if (tmpGameTurn % 2 === 1) {
     // Guessing Turn일 경우
+    document.getElementById("myCanvasButton").setAttribute("style", "display: none;"); // 지우개 버튼 안 보이게 함
     myImage = data;
     view_SetGameGuessing(myImage);
   } else {
