@@ -360,7 +360,6 @@ window.onload = () => {
     });
     
     socket.on("gameRestart",function () {
-      tmpGameTurn = 0;
       myEventEmitter.emit(EVENTS.restart);
     });
 

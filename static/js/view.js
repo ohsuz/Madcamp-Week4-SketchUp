@@ -106,9 +106,12 @@ function model_SetCanvasText(element, index, elemIdx) {
   const canvas = document.getElementById(`canvas_${index}_${elemIdx}`);
   fitCanvas(canvas);
   const ctx = canvas.getContext("2d");
+  const x = canvas.width / 2;
+  const y = canvas.height / 2;
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.font = "30px Helvetica";
-  ctx.strokeText(element, 450, 265);
+  ctx.textAlign = "center";
+  ctx.fillText(element, x, y);
 }
 function model_SetCanvasImage(element, index, elemIdx) {
   const image = new Image();
