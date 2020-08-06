@@ -82,7 +82,7 @@ const handleGame = (data) => {
   if (!isValidProcedure(EVENTS.game)) return;
   currentState = EVENTS.game;
 
-  timer.restart(10); // Timer Ticking
+  timer.restart(15); // Timer Ticking
   // Canvas 초기 세팅
   canvas.clear(); // Canvas Reset
 
