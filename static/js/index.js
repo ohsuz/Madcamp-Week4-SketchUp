@@ -340,8 +340,9 @@ window.onload = () => {
 
   // 메인 페이지에서 '시작하기' 버튼 클릭 시
   document.getElementById("button-login").addEventListener("click", () => {
-    if($("#username").val() == null)
-    return;
+    if($.trim($("#username").val())){
+      return;
+    }
   if(currentState === EVENTS.waiting){
     console.log('Merong');
     return;
@@ -353,21 +354,29 @@ window.onload = () => {
     myEventEmitter.emit(EVENTS.waiting);
 
     socket.on("gameStart", function (data) {
+      tmpGameTurn = 0;
       if (data == null) console.log(`gameStart Data is NULL!!!`);
       myEventEmitter.emit(EVENTS.game, data);
     });
   
-    tmpGameTurn = 0;
     socket.on("gameResult", function (data) {
       myEventEmitter.emit(EVENTS.myresultSet, data);
     });
     
     socket.on("gameRestart",function () {
+      tmpGameTurn = 0;
       myEventEmitter.emit(EVENTS.restart);
     });
 
     socket.on("goLogin", ()=>{
+      tmpGameTurn = 0;
       myEventEmitter.emit(EVENTS.login)
+    })
+
+    socket.emit("heartbeat");
+    socket.on('heartbeat', (data) => {
+      console.log('heart Beated')
+      setTimeout(()=>{socket.emit('heartbeat')},1000);
     })
   });
 

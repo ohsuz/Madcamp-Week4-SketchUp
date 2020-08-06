@@ -54,7 +54,6 @@ io.on("connection", function (socket) {
     2. 대기 인원 + 1
     3. 5명이면 게임 시작 / 아니면 대기 인원 수 보여주기
     */
-
   socket.on("enter", function (user) {
     if (curUsers.length == 5 && isFull) {
       io.emit("curUsers", { curUsers: curUsers.length, isFull: isFull });
@@ -137,7 +136,9 @@ io.on("connection", function (socket) {
   socket.on("everyResult", function(){
     io.emit("everyResultResponse", totalData);
   })
-
+  socket.on('heartbeat', ()=>{
+    socket.emit('heartbeat');
+  })
   socket.on("disconnect", function () {    
     console.log("Disconnected");
     curUsers.splice(curUsers.indexOf(socket.user), 1);
