@@ -141,21 +141,23 @@ io.on("connection", function (socket) {
   })
   socket.on("disconnect", function () {    
     console.log("Disconnected");
-    curUsers.splice(curUsers.indexOf(socket.user), 1);
-    curUsersId.splice(curUsersId.indexOf(socket.id), 1);
-    if(isFull){
-      io.emit("gameRestart");
-      randomWords = []; // 이번 게임에 선택된 단어 5개
-      totalData = [[], [], [], [], []];
-      rotateUsers = [];
-      isFull = false;
-      currentStageNum = 0; // 현재 게임 단계(0~4)
-      dataToBeSent = []; // curStageNum이 짝수면 그림 in&out, 홀수면 키워드 in&out
-      cntOfUsers = 0; // 유저로부터 정보가 잘 들어왔는지 체크
-      io.emit("curUsers", { curUsers: curUsers.length, isFull: isFull });
+    if(socket.user!="undefined"){
+      curUsers.splice(curUsers.indexOf(socket.user), 1);
+      curUsersId.splice(curUsersId.indexOf(socket.id), 1);
+      if(isFull){
+        io.emit("gameRestart");
+        randomWords = []; // 이번 게임에 선택된 단어 5개
+        totalData = [[], [], [], [], []];
+        rotateUsers = [];
+        isFull = false;
+        currentStageNum = 0; // 현재 게임 단계(0~4)
+        dataToBeSent = []; // curStageNum이 짝수면 그림 in&out, 홀수면 키워드 in&out
+        cntOfUsers = 0; // 유저로부터 정보가 잘 들어왔는지 체크
+        io.emit("curUsers", { curUsers: curUsers.length, isFull: isFull });
+      }
+      console.log(socket.user + " 님 퇴장 => 현재 접속자 수: " + curUsers.length);
+      console.log(curUsers)
     }
-    console.log(socket.user + " 님 퇴장 => 현재 접속자 수: " + curUsers.length);
-
   });
 });
 
