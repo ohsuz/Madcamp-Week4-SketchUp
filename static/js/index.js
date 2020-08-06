@@ -68,6 +68,9 @@ class MyEventEmitter {
 const handleLogin = (data) => {
   if (!isValidProcedure(EVENTS.login)) return;
   currentState = EVENTS.login;
+  timer.reset();
+  tmpGameTurn = 0;
+  alert("새로고침해주세요");
 };
 const handleWaiting = (data) => {
   if (!isValidProcedure(EVENTS.waiting)) return;
@@ -362,6 +365,10 @@ window.onload = () => {
     socket.on("gameRestart",function () {
       myEventEmitter.emit(EVENTS.restart);
     });
+
+    socket.on("goLogin", ()=>{
+      myEventEmitter.emit(EVENTS.login)
+    })
   });
 
   /*

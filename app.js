@@ -41,15 +41,8 @@ app.get("/", function (request, response) {
 });
 
 app.get("/refresh", (req, res) => {
-  randomWords = []; // 이번 게임에 선택된 단어 5개
-  totalData = [[], [], [], [], []];
-  curUsers = []; // 현재 접속해있는 유저들 이름 배열 -> 접속자 수 세기 위함
-  curUsersId = []; // 현재 접속해있는 유저들 socket id 배열
-  rotateUsers = [];
-  isFull = false;
-  currentStageNum = 0; // 현재 게임 단계(0~4)
-  dataToBeSent = []; // curStageNum이 짝수면 그림 in&out, 홀수면 키워드 in&out
-  cntOfUsers = 0; // 유저로부터 정보가 잘 들어왔는지 체크
+  resetAll();
+  res.send("Hello")
 });
 
 io.on("connection", function (socket) {
@@ -98,6 +91,10 @@ io.on("connection", function (socket) {
   });
   // data로 들어오는 것: stage가 짝수 => 그림, 홀수 => 키워드
   socket.on("gameSend", function (data) {
+    if(curUsers.indexOf(socket.user) == -1){
+      socket.emit("goLogin");
+      return;
+    }
     cntOfUsers += 1;
 
     // 어떤 키워드와 관련된 데이턴지 판단
@@ -186,4 +183,15 @@ function chooseWords() {
     }
     return false;
   }
+}
+function resetAll(){
+  randomWords = []; // 이번 게임에 선택된 단어 5개
+  totalData = [[], [], [], [], []];
+  curUsers = []; // 현재 접속해있는 유저들 이름 배열 -> 접속자 수 세기 위함
+  curUsersId = []; // 현재 접속해있는 유저들 socket id 배열
+  rotateUsers = [];
+  isFull = false;
+  currentStageNum = 0; // 현재 게임 단계(0~4)
+  dataToBeSent = []; // curStageNum이 짝수면 그림 in&out, 홀수면 키워드 in&out
+  cntOfUsers = 0; // 유저로부터 정보가 잘 들어왔는지 체크
 }
