@@ -354,7 +354,6 @@ window.onload = () => {
     myEventEmitter.emit(EVENTS.waiting);
 
     socket.on("gameStart", function (data) {
-      tmpGameTurn = 0;
       if (data == null) console.log(`gameStart Data is NULL!!!`);
       myEventEmitter.emit(EVENTS.game, data);
     });
