@@ -193,6 +193,9 @@ const handleRestart = () =>{
  --------------------------------*/
 const view_ShowCoverCard = () => {
   const cardCover = document.getElementsByClassName("cover-card")[0];
+  document
+    .getElementById("infoview-content")
+    .setAttribute("style", "display: visible;");
   if (!cardCover.classList.contains("visib")) {
     cardCover.classList.add("visib");
   }
