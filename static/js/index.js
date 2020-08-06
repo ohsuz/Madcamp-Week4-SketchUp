@@ -239,6 +239,7 @@ const view_SetGameDrawing = (keyword) => {
 const view_SetGameGuessing = (image) => {
   disableCanvasMouse(image);
   enableKeywordInput();
+  document.getElementById("keywordInput").focus();
   /**
    * data{
    *  data: "Kimchi",
@@ -328,7 +329,9 @@ window.onload = () => {
   // Canvas 관련 세팅
   canvas.setup(); // canvas 만들기
   initCanvasMouse(); // 마우스 연동하기
-
+  document.getElementById("myCanvasButton").addEventListener('click', ()=>{
+    canvas.clear();
+  })
   // Timer 관련 세팅
   timer.init(myEventEmitter);
 

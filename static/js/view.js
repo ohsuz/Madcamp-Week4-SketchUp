@@ -111,7 +111,7 @@ function model_SetCanvasText(element, index, elemIdx) {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.font = "30px Helvetica";
   ctx.textAlign = "center";
-  ctx.fillText(element, x, y);
+  ctx.strokeText(element, x, y);
 }
 function model_SetCanvasImage(element, index, elemIdx) {
   const image = new Image();
