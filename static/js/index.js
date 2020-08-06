@@ -340,7 +340,7 @@ window.onload = () => {
 
   // 메인 페이지에서 '시작하기' 버튼 클릭 시
   document.getElementById("button-login").addEventListener("click", () => {
-    if($.trim($("#username").val())){
+    if($.trim($("#username").val())!=""){
       return;
     }
   if(currentState === EVENTS.waiting){
