@@ -1,79 +1,202 @@
-const express = require('express')
-const socket = require('socket.io')
-const http = require('http')
-const app = express() // express 객체 생성
-const server = http.createServer(app) // express http 서버 생성
-const io = socket(server) // 생성된 서버를 socket.io에 바인딩
-const fs = require('fs') // node.js 기본 내장 모듈 불러오기
+const express = require("express");
+const socket = require("socket.io");
+const http = require("http");
+const app = express(); // express 객체 생성
+const server = http.createServer(app); // express http 서버 생성
+const io = socket(server); // 생성된 서버를 socket.io에 바인딩
+const fs = require("fs"); // node.js 기본 내장 모듈 불러오기
 
-app.use('/css', express.static('./static/css'))
-app.use('/js', express.static('./static/js'))
-/*
-get(경로, 함수): 서버의 경로를 get 방식으로 접속하면 함수가 호출됨
-- request 객체: 클라이언트에서 전달된 데이터와 정보
-- response 객체: 클라이언트에게 응답을 위한 정보
-*/
-app.get('/', function(request, response){
+let curUsers = []; // 현재 접속해있는 유저들 이름 배열 -> 접속자 수 세기 위함
+let curUsersId = []; // 현재 접속해있는 유저들 socket id 배열
+let rotateUsers = [];
+var isFull = false;
+
+let currentStageNum = 0; // 현재 게임 단계(0~4)
+let dataToBeSent = []; // curStageNum이 짝수면 그림 in&out, 홀수면 키워드 in&out
+let cntOfUsers = 0; // 유저로부터 정보가 잘 들어왔는지 체크
+
+const words = [
+  "김치",
+  "닭",
+  "냉장고",
+  "요거트",
+  "양고기",
+  "마녀",
+  "플라스틱",
+  "김치찌개",
+  "초콜릿",
+  "남자친구",
+  "여자친구",
+  "라따뚜이",
+  "커피",
+  "영화",
+  "오페라의유령",
+  "가제",
+];
+let randomWords = []; // 이번 게임에 선택된 단어 5개
+let totalData = [[], [], [], [], []];
+
+// express.static(경로) => 경로에 위치한 파일들을 하나하나 GET으로 묶어줌
+app.use(express.static(__dirname + "/static"));
+
+app.get("/", function (request, response) {
   // fs -> 파일과 관련된 처리
   // readFile: 지정된 파일을 읽어서 데이터를 가져옴
-  fs.readFile('./static/index.html', function(err, data){
-    if(err){
-      response.send('Error')
-    }else{
-      response.writeHead(200, {'Content-Type':'text/html'}) // 클라이언트에게 보낼 파일이 html이라는 것을 알려줌
-      response.write(data) // html 데이터
-      response.end() // 데이터가 모두 보내졌으면 완료됐음을 알려줌 -> write을 통해 응답할 경우, 꼭 end를 써줘야함
+  fs.readFile("./index.html", function (err, data) {
+    if (err) {
+      response.send("Error");
+    } else {
+      response.writeHead(200, { "Content-Type": "text/html" }); // 클라이언트에게 보낼 파일이 html이라는 것을 알려줌
+      response.write(data); // html 데이터
+      response.end(); // 데이터가 모두 보내졌으면 완료됐음을 알려줌 -> write을 통해 응답할 경우, 꼭 end를 써줘야함
     }
-  })
-  /*
-  console.log('유저가 / 으로 접속하였습니다!')
-  response.send('Hello, Express Server!') // response.send(전달 데이터)
-  */
-})
+  });
+});
 
-// connection이란 이벤트가 발생하면 콜백함수가 실행됨
-// io.sockets: 접속되는 모든 소켓들 vs socket: 접속된 해당 소켓
-// 콜백 함수 안의 함수들: 해당 소켓과 통신할 코드
-io.sockets.on('connection', function(socket){
+app.get("/refresh", (req, res) => {
+  randomWords = []; // 이번 게임에 선택된 단어 5개
+  totalData = [[], [], [], [], []];
+  curUsers = []; // 현재 접속해있는 유저들 이름 배열 -> 접속자 수 세기 위함
+  curUsersId = []; // 현재 접속해있는 유저들 socket id 배열
+  rotateUsers = [];
+  isFull = false;
+  currentStageNum = 0; // 현재 게임 단계(0~4)
+  dataToBeSent = []; // curStageNum이 짝수면 그림 in&out, 홀수면 키워드 in&out
+  cntOfUsers = 0; // 유저로부터 정보가 잘 들어왔는지 체크
+});
 
-  /*
-  새로운 유저가 접속한 이벤트
-  */
-  socket.on('newUser', function(name){
-    console.log(name+' 님이 접속하였습니다.')
-
-    socket.name = name // 소켓에 이름 저장
-
-    // 모든 소켓에게 전송
-    // io.sockets.emit('이벤트명', {type: 메세지 유형(서버 알림, 유저 메세지), message: 전달된 메세지 데이터, name: 메세지를 전달한 유저 or 서버 이름})
-    io.sockets.emit('update', {type:'connect', name:'SERVER', message: name+' 님이 접속하였습니다.'})
-  })
+io.on("connection", function (socket) {
+  console.log("Connected");
 
   /*
-  메세지를 받은 이벤트
-  */
-  socket.on('message', function(data){
-    data.name = socket.name // 받은 데이터에 발신자를 추가
-    console.log(data)
+    유저가 입장했을 때
+    1. 소켓에 유저 닉네임 저장
+    2. 대기 인원 + 1
+    3. 5명이면 게임 시작 / 아니면 대기 인원 수 보여주기
+    */
 
-    // 보낸 사람을 제외한 나머지 유저에게 메세지 전송
-    // socket.broadcast.emit('이벤트명', 전송할 데이터)
-    socket.broadcast.emit('update', data)
+  socket.on("enter", function (user) {
+    if (curUsers.length == 5 && isFull) {
+      io.emit("curUsers", { curUsers: curUsers.length, isFull: isFull });
+    } else {
+      isFull = false;
+      socket.user = user;
+      curUsers.push(socket.user);
+      curUsersId.push(socket.id);
+      console.log(
+        socket.user + " 님 입장 => 현재 접속자 수: " + curUsers.length
+      );
+      // waiting 페이지에 현재 접속자 수를 넘겨줌
+      io.emit("curUsers", { curUsers: curUsers.length, isFull: isFull });
+      if (curUsers.length == 5) {
+        isFull = true; // 5명 다 참
+        rotateUsers = curUsers.slice();
+        /*
+                1. 랜덤한 5개 단어 생성 (나중에 리스트 초기화해야할듯)
+                2. 각 유저에게 단어 하나씩 푸쉬
+                */
+        chooseWords();
+        setTimeout(() => {
+          for (let userIdx = 0; userIdx < curUsers.length; userIdx++) {
+            console.log(
+              `curUsers ${curUsers[userIdx]}에게 ${randomWords[userIdx]}에 관한 데이터 보내기`
+            );
+            io.to(curUsersId[userIdx]).emit("gameStart", randomWords[userIdx]);
+            totalData[userIdx].push(randomWords[userIdx]);
+            // ex) totalData = [['강아지'],['고양이'],['소'],['말'],['돼지']]
+          }
+        }, 1000);
+      }
+    }
+  });
+  // data로 들어오는 것: stage가 짝수 => 그림, 홀수 => 키워드
+  socket.on("gameSend", function (data) {
+    cntOfUsers += 1;
+
+    // 어떤 키워드와 관련된 데이턴지 판단
+    const whomData = curUsers.indexOf(socket.user);
+    const originWhomData = curUsers.indexOf(rotateUsers[whomData]);
+    console.log(`hi:` + socket.user + `, ` + originWhomData);
+    if(data == null)
+      data = " ";
+    // 해당 키워드 배열에 데이터를 푸쉬  example) 김치, 김치그림, 김치, 김치그림, ...
+    totalData[originWhomData].push(data);
+    // 모든 data가 제대로 도착함
+    if (cntOfUsers === 5) {
+      console.log(`before: ${rotateUsers}`);
+      rotateUsers.push(rotateUsers.shift()); // B, C, D, E, A == 1,2,3,4,0
+      console.log(`after: ${rotateUsers}`);
+      currentStageNum += 1;
+      if (currentStageNum === 5) {
+        console.log(`Result Send!!!, rotateUser: ${rotateUsers}`);
+        setTimeout(() => {
+          io.emit("gameResult", {totalData:totalData, curUsers: curUsers});
+        }, 3000);
+        return;
+      }
+      for (let i = 0; i < rotateUsers.length; i += 1) {
+        const userToSend = curUsers.indexOf(rotateUsers[i]); //rotate에서 순서를 찾음
+        console.log(`보낼 데이터: ${totalData[userToSend][0]}`);
+        console.log(`받을 사람: ${curUsers[i]}`);
+        dataToBeSent.push(totalData[userToSend][currentStageNum]); // 수정: currentStageNum -1 => currentStageNum
+      }
+      cntOfUsers = 0;
+      setTimeout(() => {
+        for (let i = 0; i < rotateUsers.length; i += 1) {
+          io.to(curUsersId[i]).emit("gameStart", dataToBeSent[i]);
+        }
+        dataToBeSent = [];
+      }, 3000); // dataToBeSent 배열 초기화
+    }
+  });
+
+  socket.on("everyResult", function(){
+    io.emit("everyResultResponse", totalData);
   })
 
-  /*
-  연결이 종료된 이벤트
-  */
-  socket.on('disconnect', function(){
-    console.log(socket.name + ' 님이 나가셨습니다.')
+  socket.on("disconnect", function () {    
+    console.log("Disconnected");
+    curUsers.splice(curUsers.indexOf(socket.user), 1);
+    curUsersId.splice(curUsersId.indexOf(socket.id), 1);
+    if(isFull){
+      io.emit("gameRestart");
+      randomWords = []; // 이번 게임에 선택된 단어 5개
+      totalData = [[], [], [], [], []];
+      rotateUsers = [];
+      isFull = false;
+      currentStageNum = 0; // 현재 게임 단계(0~4)
+      dataToBeSent = []; // curStageNum이 짝수면 그림 in&out, 홀수면 키워드 in&out
+      cntOfUsers = 0; // 유저로부터 정보가 잘 들어왔는지 체크
+      io.emit("curUsers", { curUsers: curUsers.length, isFull: isFull });
+    }
+    console.log(socket.user + " 님 퇴장 => 현재 접속자 수: " + curUsers.length);
 
-    // 나가는 사람을 제외한 나머지 유저에게 메세지 전송
-    socket.broadcast.emit('update', {type:'disconnect', name:'SERVER', message: socket.name + ' 님이 나가셨습니다.'})
-  })
-})
+  });
+});
 
-// 원하는 포트번호로 서버 실행
-// 지정한 포트(ex.8080)로 서버를 실행하면 리스너가 호출됨
-server.listen(8080, function(){
-  console.log('Server is running...')
-})
+server.listen(8080, function () {
+  console.log("Server is running...");
+});
+
+function chooseWords() {
+  let i = 0;
+  let nList = [];
+  while (i < 5) {
+    let n = Math.floor(Math.random() * words.length);
+    if (!sameNum(n)) {
+      nList.push(n);
+      randomWords.push(words[n]);
+      i++;
+    }
+  }
+
+  // 생성된 랜덤 숫자가 중복인지 아닌지 판단
+  function sameNum(n) {
+    for (var i = 0; i < nList.length; i++) {
+      if (n === nList[i]) {
+        return true;
+      }
+    }
+    return false;
+  }
+}
