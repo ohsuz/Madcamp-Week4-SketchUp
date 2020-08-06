@@ -4,8 +4,7 @@
 Sketchup is a party game in which players are prompted to sketch a word listed on a card, 
 then guess what the other players have drawn.
 
-2. Rule
-Each player is given a drawing book and a marker. 
+2. Rule: Each player is given a drawing book and a marker. 
 At the start of each round, every player is given a card with a list of secret words.
 The players then have fifteen seconds to draw their word on page one of their drawing book.
 Once the fifteen seconds have passed, the players pass their books to the player on their left.
