@@ -97,12 +97,10 @@ const handleGame = (data) => {
   // 이게 몇번째 라운드인지, 내 단어가 무엇인지, +상황판
   if (tmpGameTurn % 2 === 0) {
     // Drawing Turn일 경우
-    document.getElementById("myCanvasButton").setAttribute("style", "display: visible;"); // 지우개 버튼 안 보이게 함
     myKeyword = data;
     view_SetGameDrawing(myKeyword);
   } else if (tmpGameTurn % 2 === 1) {
     // Guessing Turn일 경우
-    document.getElementById("myCanvasButton").setAttribute("style", "display: none;"); // 지우개 버튼 안 보이게 함
     myImage = data;
     view_SetGameGuessing(myImage);
   } else {
@@ -193,9 +191,6 @@ const handleRestart = () =>{
  --------------------------------*/
 const view_ShowCoverCard = () => {
   const cardCover = document.getElementsByClassName("cover-card")[0];
-  document
-    .getElementById("infoview-content")
-    .setAttribute("style", "display: visible;");
   if (!cardCover.classList.contains("visib")) {
     cardCover.classList.add("visib");
   }
@@ -333,9 +328,6 @@ window.onload = () => {
   // Canvas 관련 세팅
   canvas.setup(); // canvas 만들기
   initCanvasMouse(); // 마우스 연동하기
-  document.getElementById("myCanvasButton").addEventListener("click", () => {
-    canvas.clear();
-  }); // clear 버튼 연결하기 TODO: 글 쓸때도 지우기누르면 지워지는거 수정하기.
 
   // Timer 관련 세팅
   timer.init(myEventEmitter);
@@ -345,7 +337,7 @@ window.onload = () => {
 
   // 메인 페이지에서 '시작하기' 버튼 클릭 시
   document.getElementById("button-login").addEventListener("click", () => {
-    if($.trim($("#username").val())==""){
+    if($.trim($("#username").val())!=""){
       return;
     }
   if(currentState === EVENTS.waiting){
@@ -359,6 +351,7 @@ window.onload = () => {
     myEventEmitter.emit(EVENTS.waiting);
 
     socket.on("gameStart", function (data) {
+      tmpGameTurn = 0;
       if (data == null) console.log(`gameStart Data is NULL!!!`);
       myEventEmitter.emit(EVENTS.game, data);
     });

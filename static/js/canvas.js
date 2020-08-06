@@ -110,6 +110,8 @@ let canvas = {
 
 const disableCanvasMouse = (images) => {
   const myCanvas = document.getElementById("myCanvas");
+  document.getElementById("myCanvasButton").addEventListener('click', ()=>{
+  })
   canvas.preDraw(images);
   myCanvas.onmousedown = myCanvas.ontouchstart = (e) => {
     e.preventDefault();
@@ -124,7 +126,9 @@ const disableCanvasMouse = (images) => {
 
 const initCanvasMouse = () => {
   const myCanvas = document.getElementById("myCanvas");
-
+  document.getElementById("myCanvasButton").addEventListener('click', ()=>{
+    canvas.clear();
+  })
   myCanvas.onmousedown = myCanvas.ontouchstart = function (e) {
     const xy = getMouse(e, myCanvas);
     canvas.beginDraw(xy.x, xy.y);

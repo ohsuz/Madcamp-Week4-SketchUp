@@ -10,6 +10,7 @@ let curUsers = []; // 현재 접속해있는 유저들 이름 배열 -> 접속�
 let curUsersId = []; // 현재 접속해있는 유저들 socket id 배열
 let rotateUsers = [];
 var isFull = false;
+let isGame= false;
 
 let currentStageNum = 0; // 현재 게임 단계(0~4)
 let dataToBeSent = []; // curStageNum이 짝수면 그림 in&out, 홀수면 키워드 in&out
@@ -59,6 +60,7 @@ io.on("connection", function (socket) {
       io.emit("curUsers", { curUsers: curUsers.length, isFull: isFull });
     } else {
       isFull = false;
+      isGame = false;
       socket.user = user;
       curUsers.push(socket.user);
       curUsersId.push(socket.id);
@@ -69,6 +71,7 @@ io.on("connection", function (socket) {
       io.emit("curUsers", { curUsers: curUsers.length, isFull: isFull });
       if (curUsers.length == 5) {
         isFull = true; // 5명 다 참
+        isGame = true;
         rotateUsers = curUsers.slice();
         /*
                 1. 랜덤한 5개 단어 생성 (나중에 리스트 초기화해야할듯)
@@ -115,6 +118,7 @@ io.on("connection", function (socket) {
         setTimeout(() => {
           io.emit("gameResult", {totalData:totalData, curUsers: curUsers});
         }, 3000);
+        isGame = false;
         return;
       }
       for (let i = 0; i < rotateUsers.length; i += 1) {
@@ -144,11 +148,12 @@ io.on("connection", function (socket) {
     if(typeof socket.user!="undefined" || socket.user!= null){
       curUsers.splice(curUsers.indexOf(socket.user), 1);
       curUsersId.splice(curUsersId.indexOf(socket.id), 1);
-      if(isFull){
+      if(isFull & isGame){
         io.emit("gameRestart");
         randomWords = []; // 이번 게임에 선택된 단어 5개
         totalData = [[], [], [], [], []];
         rotateUsers = [];
+        isGame = false;
         isFull = false;
         currentStageNum = 0; // 현재 게임 단계(0~4)
         dataToBeSent = []; // curStageNum이 짝수면 그림 in&out, 홀수면 키워드 in&out
@@ -194,6 +199,7 @@ function resetAll(){
   curUsersId = []; // 현재 접속해있는 유저들 socket id 배열
   rotateUsers = [];
   isFull = false;
+  isGame = false;
   currentStageNum = 0; // 현재 게임 단계(0~4)
   dataToBeSent = []; // curStageNum이 짝수면 그림 in&out, 홀수면 키워드 in&out
   cntOfUsers = 0; // 유저로부터 정보가 잘 들어왔는지 체크
