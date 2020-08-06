@@ -9,7 +9,7 @@ socket.on("curUsers", function (data) {
       document.getElementById("curUsers").innerHTML =
       "<h3 id='textDeco'>접속 인원</h3><h3 id='textDeco'>"+data.curUsers+" / 5 </h3>";
     }
-    if (data.curUsers != 5 && currentState === EVENTS.waiting) {
+    if (data.curUsers == 5 && currentState === EVENTS.waiting) {
       console.log(`curUsers curUsers ==5`);
       document
         .getElementById("infoview-content")
