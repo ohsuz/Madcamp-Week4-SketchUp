@@ -13,4 +13,4 @@ Once all players have written their guesses, they turn their books to page three
 Players continue to draw and guess until they have their original books back.
 
 3. Special Thanks to
-Our GOD, Jongwoo Park
+Our GOD, Jongwoo Park★
