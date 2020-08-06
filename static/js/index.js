@@ -97,6 +97,7 @@ const handleGame = (data) => {
   // 이게 몇번째 라운드인지, 내 단어가 무엇인지, +상황판
   if (tmpGameTurn % 2 === 0) {
     // Drawing Turn일 경우
+    document.getElementById("myCanvasButton").setAttribute("style", "display: visible;"); // 지우개 버튼 안 보이게 함
     myKeyword = data;
     view_SetGameDrawing(myKeyword);
   } else if (tmpGameTurn % 2 === 1) {
