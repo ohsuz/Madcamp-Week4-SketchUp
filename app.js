@@ -141,7 +141,7 @@ io.on("connection", function (socket) {
   })
   socket.on("disconnect", function () {    
     console.log("Disconnected");
-    if(socket.user!="undefined"){
+    if(typeof socket.user!="undefined" || socket.user!= null){
       curUsers.splice(curUsers.indexOf(socket.user), 1);
       curUsersId.splice(curUsersId.indexOf(socket.id), 1);
       if(isFull){
