@@ -31,6 +31,57 @@ then guess what the other players have drawn.
 
 ### :camera: Snapshots
 
+:one: Write your nickname and press start. The game starts when the five players gather.
+
+<div>
+  <img width="45%" src="https://user-images.githubusercontent.com/59340911/91460125-6ab88b00-e8c2-11ea-976e-2205edf327b1.png">
+  <img width="45%" src="https://user-images.githubusercontent.com/59340911/91459711-e6660800-e8c1-11ea-800e-8a78fe150727.png">
+</div><br>
+<div>
+  <img width="45%" src="https://user-images.githubusercontent.com/59340911/91459692-e0702700-e8c1-11ea-8205-993456cbff0d.png">
+  <img width="45%" src="https://user-images.githubusercontent.com/59340911/91461182-a6a02000-e8c3-11ea-82dd-1f748e6e22a3.png">
+</div><br>
+
+:two: Draw the keyword given to you quickly for 15 seconds.
+
+<div>
+  <img width="80%" src="https://user-images.githubusercontent.com/59340911/91461199-abfd6a80-e8c3-11ea-822d-c03071dd674d.png">
+</div><br>
+
+:three: Look at other's drawing given to you and guess the keyword. 
+
+<div>
+  <img width="80%" src="https://user-images.githubusercontent.com/59340911/91461212-ae5fc480-e8c3-11ea-8496-afa48c54651e.png">
+</div><br>
+
+:four: Repeat steps 2 and 3 until one lap is complete.
+
+:five: When one lap is done, you can check the results of your keyword.
+
+<div>
+  <img width="32%" src="https://user-images.githubusercontent.com/59340911/91461225-b3bd0f00-e8c3-11ea-9012-6d3bfb2f76d1.png">
+  <img width="32%" src="https://user-images.githubusercontent.com/59340911/91461234-b61f6900-e8c3-11ea-948b-609d56d0bfba.png">
+  <img width="32%" src="https://user-images.githubusercontent.com/59340911/91461243-b91a5980-e8c3-11ea-9c43-c2a57fda2f76.png">
+</div><br>
+
+<div>
+  <img width="32%" src="https://user-images.githubusercontent.com/59340911/91461248-bb7cb380-e8c3-11ea-83f1-e12dcab59829.png">
+  <img width="32%" src="https://user-images.githubusercontent.com/59340911/91461258-bddf0d80-e8c3-11ea-85e4-ec0468405ed0.png">
+  <img width="32%" src="https://user-images.githubusercontent.com/59340911/91461270-c0416780-e8c3-11ea-8af1-4e003f2243c9.png">
+</div><br>
+
+:six: Also, if you click on the palette image, can see the results of other people's keywords, 
+
+<div>
+  <img width="45%" src="https://user-images.githubusercontent.com/59340911/91461276-c33c5800-e8c3-11ea-9daf-8f0f3440f9ed.png">
+  <img width="45%" src="https://user-images.githubusercontent.com/59340911/91461286-c5061b80-e8c3-11ea-8580-21ddc4994054.png">
+</div><br>
+<div>
+  <img width="45%" src="https://user-images.githubusercontent.com/59340911/91461295-c6cfdf00-e8c3-11ea-9a27-f52e73e867c7.png">
+  <img width="45%" src="https://user-images.githubusercontent.com/59340911/91461304-c899a280-e8c3-11ea-84e1-85a5b1efb8b0.png">
+</div><br>
+
+
 ---
 
 ### :bulb: Tech Stack
