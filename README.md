@@ -95,6 +95,6 @@ then guess what the other players have drawn.
 ### :memo: Collaborators
 :pencil2: [Suzie Oh](https://github.com/ohsuz)
 
-:pencil2: [Heeseon Kim](https://github.com/heemokyim)
+:pencil2: [Heeseon Kim](https://github.com/khslily98)
 
 :pencil2: [Jongwoo Park](https://github.com/jjwow73)
