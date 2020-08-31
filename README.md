@@ -70,7 +70,7 @@ then guess what the other players have drawn.
   <img width="32%" src="https://user-images.githubusercontent.com/59340911/91461270-c0416780-e8c3-11ea-8af1-4e003f2243c9.png">
 </div><br>
 
-:six: Also, if you click on the palette image, can see the results of other people's keywords.  
+:six: Also, if you click on the palette image, you can see the results of other people's keywords.  
 
 <div>
   <img width="45%" src="https://user-images.githubusercontent.com/59340911/91461276-c33c5800-e8c3-11ea-9daf-8f0f3440f9ed.png">
